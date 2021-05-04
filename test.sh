@@ -26,4 +26,5 @@ az aks create --resource-group $RESOURCE_GROUP --location $REGION \
   --nodepool-name "kubenet" \
   --outbound-type "loadBalancer" \
   --load-balancer-outbound-ips $PUBLIC_IP_OUTBOUND_ID \
+  --generate-ssh-keys
   # --linux-os-config ./linuxosconfig.json 
