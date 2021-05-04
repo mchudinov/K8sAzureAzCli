@@ -61,6 +61,7 @@ az monitor log-analytics workspace create --resource-group $RESOURCE_GROUP --loc
   --workspace-name log-k8s-$DEPLOYMENT_NAME \
   --sku "PerGB2018"
 
+export LOGANALTICS_WORKSPACE_ID=$(az monitor log-analytics workspace show --resource-group $RESOURCE_GROUP --workspace-name log-k8s-$DEPLOYMENT_NAME --query customerId -o tsv)
 export PUBLIC_IP_INBOUND=$(az network public-ip show --resource-group $RESOURCE_GROUP --name ip-inbound-$DEPLOYMENT_NAME --query ipAddress -o tsv)
 export PUBLIC_IP_OUTBOUND_ID=$(az network public-ip show --resource-group $RESOURCE_GROUP --name ip-outbound-$DEPLOYMENT_NAME --query id -o tsv)
 
@@ -78,7 +79,12 @@ then
 fi
 echo "PUBLIC_IP_OUTBOUND_ID:    $PUBLIC_IP_OUTBOUND_ID"
 
-# az monitor log-analytics workspace show --resource-group $RESOURCE_GROUP --workspace-name log-k8s-$DEPLOYMENT_NAME 
+if test -z "$LOGANALTICS_WORKSPACE_ID" 
+then
+  echo "Error: LOGANALTICS_WORKSPACE_ID is empty. It is required to configure logging of Kubernetes. Exit script"
+  exit
+fi
+echo "LOGANALTICS_WORKSPACE_ID:    $LOGANALTICS_WORKSPACE_ID"
 
 # Register the CustomNodeConfigPreview preview feature
 az feature register --namespace "Microsoft.ContainerService" --name "CustomNodeConfigPreview"
@@ -96,8 +102,9 @@ az aks create --resource-group $RESOURCE_GROUP --location $region \
   --nodepool-name "kubenet" \
   --outbound-type "loadBalancer" \
   --load-balancer-outbound-ips $PUBLIC_IP_OUTBOUND_ID \
-  --linux-os-config ./linuxosconfig.json 
-  # --workspace-resource-id xxx \  
+  --generate-ssh-keys \
+  --linux-os-config ./linuxosconfig.json \
+  --workspace-resource-id $LOGANALTICS_WORKSPACE_ID \
 echo "Creating AKS done"
 
 # az aks enable-addons --addons monitoring --name $AKS_NAME --resource-group $RESOURCE_GROUP --workspace-resource-id
@@ -108,7 +115,9 @@ az aks get-credentials --name $AKS_NAME --resource-group $RESOURCE_GROUP
 
 # List k8s available cluster
 az aks list -o table
+kubectl config get-contexts
 
+echo "Switching context to the new AKS: $AKS_NAME"
 # Switch kubectl context to the newly created cluster
 kubectl config use-context $AKS_NAME
 
