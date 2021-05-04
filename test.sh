@@ -3,6 +3,11 @@
 export RESOURCE_GROUP="rg-test123"
 export REGION="westeurope"
 
+az feature register --namespace "Microsoft.ContainerService" --name "CustomNodeConfigPreview"
+az provider register --namespace Microsoft.ContainerService
+az extension add --name aks-preview
+az extension update --name aks-preview
+
 az group create --name $RESOURCE_GROUP --location $REGION
 
 az network public-ip create --resource-group $RESOURCE_GROUP --location $REGION \
