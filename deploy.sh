@@ -61,7 +61,7 @@ az monitor log-analytics workspace create --resource-group $RESOURCE_GROUP --loc
   --workspace-name log-k8s-$DEPLOYMENT_NAME \
   --sku "PerGB2018"
 
-export LOGANALTICS_WORKSPACE_ID=$(az monitor log-analytics workspace show --resource-group $RESOURCE_GROUP --workspace-name log-k8s-$DEPLOYMENT_NAME --query customerId -o tsv)
+export LOGANALTICS_WORKSPACE_ID=$(az monitor log-analytics workspace show --resource-group $RESOURCE_GROUP --workspace-name log-k8s-$DEPLOYMENT_NAME --query id -o tsv)
 export PUBLIC_IP_INBOUND=$(az network public-ip show --resource-group $RESOURCE_GROUP --name ip-inbound-$DEPLOYMENT_NAME --query ipAddress -o tsv)
 export PUBLIC_IP_OUTBOUND_ID=$(az network public-ip show --resource-group $RESOURCE_GROUP --name ip-outbound-$DEPLOYMENT_NAME --query id -o tsv)
 
