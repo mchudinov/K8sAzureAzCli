@@ -101,14 +101,15 @@ az aks create --resource-group $RESOURCE_GROUP --location $region \
   --node-vm-size "Standard_B2s" \
   --nodepool-name "kubenet" \
   --outbound-type "loadBalancer" \
+  --enable-addons monitoring  \
   --load-balancer-outbound-ips $PUBLIC_IP_OUTBOUND_ID \
   --generate-ssh-keys \
   --linux-os-config ./linuxosconfig.json \
   --workspace-resource-id $LOGANALTICS_WORKSPACE_ID 
-  
+
 echo "Creating AKS done"
 
-# az aks enable-addons --addons monitoring --name $AKS_NAME --resource-group $RESOURCE_GROUP --workspace-resource-id
+az aks enable-addons --addons monitoring --name $AKS_NAME --resource-group $RESOURCE_GROUP --workspace-resource-id
 az aks enable-addons --addons azure-policy --name $AKS_NAME --resource-group $RESOURCE_GROUP
 
 # Add cluster key to the local .kubeconfig file
