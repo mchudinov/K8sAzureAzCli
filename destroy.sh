@@ -19,8 +19,7 @@ export DEPLOYMENT_NAME=$name
 export RESOURCE_GROUP=rg-$DEPLOYMENT_NAME
 export AKS_NAME=k8s-$DEPLOYMENT_NAME
 
-echo "Deployment name:                    $DEPLOYMENT_NAME"
 echo "Azure resource group name:          $RESOURCE_GROUP"
-echo "AKS resource name:                  $AKS_NAME"
+echo "AKS name:                           $AKS_NAME"
 
 az group delete --resource-group $RESOURCE_GROUP

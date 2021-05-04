@@ -102,11 +102,11 @@ kubectl get pods -l app=secrets-store-csi-driver
 # Clean up
 ## Delete everything created in Azure:
 ### destroy.sh
-Use _destroy.sh_ script with the same parameters as for _deploy.sh_
+Use _destroy.sh_ script with cluster name as parameter
 
 For example:
 
-`./destroy.sh -c mytestk8s -n 3 -r westeurope`
+`./destroy.sh -c mytestk8s `
 
 ### Manually
 If _destroy.sh_ script fails everything that was created can be easily erased manyally. Just delete the resource group created by deployment script: 
